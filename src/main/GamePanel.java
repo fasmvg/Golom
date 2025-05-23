@@ -148,14 +148,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void copyPieces(ArrayList<Piece> source, ArrayList<Piece> target) {
         target.clear();
-        for (int i = 0; i < source.size(); i++) {
-            target.add(source.get(i));
-        }
+        target.addAll(source);
     }
 
     @Override
     public void run() {
-        double drawInterval = 1000000000 / FPS;
+        double drawInterval = (double) 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -191,7 +189,7 @@ public class GamePanel extends JPanel implements Runnable {
         StringBuilder history = new StringBuilder();
         for (int i = 0; i < moveHistory.size(); i++) {
             if (i % 2 == 0) {
-                history.append((i / 2 + 1) + ". ");
+                history.append((i / 2 + 1)).append(". ");
             }
             history.append(moveHistory.get(i).toString()).append(" ");
             if (i % 2 == 1) {
@@ -493,11 +491,7 @@ public class GamePanel extends JPanel implements Runnable {
         if (isValidMove(king, 0, 1)) {
             return true;
         }
-        if (isValidMove(king, 1, 1)) {
-            return true;
-        }
-
-        return false;
+        return isValidMove(king, 1, 1);
     }
 
     private boolean isValidMove(Piece king, int colPlus, int rowPlus) {
@@ -510,8 +504,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (king.hittingP != null) {
                 simPieces.remove(king.hittingP.getIndex());
             }
-
-            if (isIllegal(king) == false) {
+            if (!isIllegal(king)) {
                 isValidMove = true;
             }
         }
@@ -531,7 +524,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
         if (count == 1) {
-            if (kingCanMove(getKing(true)) == false) {
+            if (!kingCanMove(getKing(true))) {
                 return true;
             }
         }
@@ -641,13 +634,13 @@ public class GamePanel extends JPanel implements Runnable {
         if (activeP != null) {
             if (canMove) {
                 if (isIllegal(activeP) || opponentCanCaptureKing()) {
-                    g2.setColor(Color.gray);
+                    g2.setColor(Color.YELLOW);
                     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
                     g2.fillRect(activeP.col * Board.SQUARE_SIZE, activeP.row * Board.SQUARE_SIZE, Board.SQUARE_SIZE,
                             Board.SQUARE_SIZE);
                     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
                 } else {
-                    g2.setColor(Color.white);
+                    g2.setColor(Color. YELLOW);
                     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
                     g2.fillRect(activeP.col * Board.SQUARE_SIZE, activeP.row * Board.SQUARE_SIZE, Board.SQUARE_SIZE,
                             Board.SQUARE_SIZE);
