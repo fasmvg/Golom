@@ -677,7 +677,7 @@ public class GamePanel extends JPanel implements Runnable {
                 g2.drawImage(piece.image, startX + (i * spacing), y,
                         Board.SQUARE_SIZE, Board.SQUARE_SIZE, null);
             }
-        } else if (promotion && isKingInCheck()){
+        } else {
             if (currentColor == WHITE) {
                 g2.setColor(Color.GRAY);
                 g2.drawString("Turno das brancas", 580, 120);
