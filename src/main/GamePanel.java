@@ -16,6 +16,7 @@ import piece.Pawn;
 import piece.Piece;
 import piece.Queen;
 import piece.Rook;
+import sound.Sound;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -45,9 +46,9 @@ public class GamePanel extends JPanel implements Runnable {
     boolean gameover;
     boolean stalemate;
 
-    // Adicione estes campos
     private ArrayList<ChessMove> moveHistory = new ArrayList<>();
     private JTextArea moveHistoryArea;
+    private Sound soundManager;
 
     public GamePanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -101,6 +102,8 @@ public class GamePanel extends JPanel implements Runnable {
         });
 
         this.add(scrollPane);
+        
+        soundManager = new Sound();
     }
 
     public void launchGame() {
@@ -181,7 +184,6 @@ public class GamePanel extends JPanel implements Runnable {
         ChessMove move = new ChessMove(pieceName, from, to, isCapture);
         moveHistory.add(move);
 
-        // Atualiza o texto do histórico
         updateMoveHistory();
     }
 
@@ -242,9 +244,12 @@ public class GamePanel extends JPanel implements Runnable {
             if (!mouse.pressed) {
                 if (activeP != null) {
                     if (validSquare) {
-                        // MOVE CONFIRMED
+                        if (activeP.hittingP != null) {
+                            soundManager.playCapture();
+                        } else {
+                            soundManager.playMove();
+                        }
 
-                        // Adicione esta linha após confirmar o movimento
                         recordMove(activeP);
 
                         // Update the piece list in case being captured
@@ -256,11 +261,10 @@ public class GamePanel extends JPanel implements Runnable {
                         }
 
                         if (isKingInCheck() && isCheckMate()) {
-                            // Gameover if checkmate
                             gameover = true;
                         } else if (isStalemate() && !isKingInCheck()) {
                             stalemate = true;
-                        } else { // The game is continue
+                        } else {
                             if (canPromote()) {
                                 promotion = true;
                             } else {
