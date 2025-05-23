@@ -516,7 +516,6 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
 
-        // Reset the temporary King position
         king.resetPosition();
         copyPieces(pieces, simPieces);
 
@@ -531,13 +530,11 @@ public class GamePanel extends JPanel implements Runnable {
                 count++;
             }
         }
-
         if (count == 1) {
             if (kingCanMove(getKing(true)) == false) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -579,23 +576,31 @@ public class GamePanel extends JPanel implements Runnable {
         if (activeP.type == Type.PAWN) {
             if (currentColor == WHITE && activeP.row == 0 || currentColor == BLACK && activeP.row == 7) {
                 promoPieces.clear();
-                promoPieces.add(new Rook(currentColor, 9, 2));
-                promoPieces.add(new Knight(currentColor, 9, 3));
-                promoPieces.add(new Bishop(currentColor, 9, 4));
-                promoPieces.add(new Queen(currentColor, 9, 5));
-
+                promoPieces.add(new Rook(currentColor, 0, 0));
+                promoPieces.add(new Knight(currentColor, 0, 0));
+                promoPieces.add(new Bishop(currentColor, 0, 0));
+                promoPieces.add(new Queen(currentColor, 0, 0));
                 return true;
             }
         }
-
         return false;
     }
 
+
     private void promoting() {
         if (mouse.pressed) {
-            for (Piece piece : promoPieces) {
-                if (piece.col == mouse.x / Board.SQUARE_SIZE && piece.row == mouse.y / Board.SQUARE_SIZE) {
-                    switch (piece.type) {
+            int startX = 550;
+            int y = 90;
+            int spacing = 60;
+
+            for (int i = 0; i < promoPieces.size(); i++) {
+                int pieceX = startX + (i * spacing);
+                if (mouse.x >= pieceX && mouse.x < pieceX + Board.SQUARE_SIZE &&
+                        mouse.y >= y && mouse.y < y + Board.SQUARE_SIZE) {
+
+                    Piece selectedPiece = promoPieces.get(i);
+
+                    switch (selectedPiece.type) {
                         case ROOK:
                             simPieces.add(new Rook(currentColor, activeP.col, activeP.row));
                             break;
@@ -616,6 +621,7 @@ public class GamePanel extends JPanel implements Runnable {
                     activeP = null;
                     promotion = false;
                     changePlayer();
+                    break;
                 }
             }
         }
@@ -657,12 +663,21 @@ public class GamePanel extends JPanel implements Runnable {
         g2.setColor(Color.white);
 
         if (promotion) {
-            g2.drawString("Promover para:", 550, 120);
-            for (Piece piece : promoPieces) {
-                g2.drawImage(piece.image, piece.getX(piece.col), piece.getY(piece.row), Board.SQUARE_SIZE,
-                        Board.SQUARE_SIZE, null);
+            g2.setColor(Color.GRAY);
+            g2.drawString("Promover para:", 550, 80);
+
+            int startX = 540;
+            int y = 85;
+            int spacing = 60;
+
+            for (int i = 0; i < promoPieces.size(); i++) {
+                Piece piece = promoPieces.get(i);
+                piece.col = (startX + (i * spacing)) / Board.SQUARE_SIZE;
+                piece.row = y / Board.SQUARE_SIZE;
+                g2.drawImage(piece.image, startX + (i * spacing), y,
+                        Board.SQUARE_SIZE, Board.SQUARE_SIZE, null);
             }
-        } else {
+        } else if (promotion && isKingInCheck()){
             if (currentColor == WHITE) {
                 g2.setColor(Color.GRAY);
                 g2.drawString("Turno das brancas", 580, 120);
