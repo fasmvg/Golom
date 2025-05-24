@@ -1,8 +1,7 @@
 package sound;
 
 import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 
 public class Sound {
     private Clip moveSound;
@@ -14,19 +13,18 @@ public class Sound {
 
     private void loadSounds() {
         try {
-            moveSound = loadSound("res/sound/move-self.wav");
-            captureSound = loadSound("res/sound/capture.wav");
+            InputStream pathCaptureSound = getClass().getResourceAsStream("/sound/capture.wav");
+            captureSound = AudioSystem.getClip();
+            assert pathCaptureSound != null;
+            captureSound.open(AudioSystem.getAudioInputStream(pathCaptureSound));
+
+            InputStream pathMoveSound = getClass().getResourceAsStream("/sound/move-self.wav");
+            moveSound = AudioSystem.getClip();
+            assert pathMoveSound != null;
+            moveSound.open(AudioSystem.getAudioInputStream(pathMoveSound));
         } catch (Exception e) {
             System.out.println("Erro ao carregar sons: " + e.getMessage());
         }
-    }
-
-    private Clip loadSound(String path) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
-        File soundFile = new File(path);
-        AudioInputStream audioInput = AudioSystem.getAudioInputStream(soundFile);
-        Clip clip = AudioSystem.getClip();
-        clip.open(audioInput);
-        return clip;
     }
 
     public void playMove() {

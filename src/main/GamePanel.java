@@ -683,7 +683,8 @@ public class GamePanel extends JPanel implements Runnable {
 
                 if (checkingP != null && checkingP.color == BLACK) {
                     g2.setColor(Color.red);
-                    g2.drawString("REI EM CHEQUE!", 500, 60);
+                    g2.drawString("REI EM CHEQUE!", 580, 60);
+                    g2.drawLine(580, 70,  740, 70);
                 }
             } else {
                 g2.setColor(Color.GRAY);
