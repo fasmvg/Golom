@@ -1,4 +1,4 @@
-<a target="_blank"><img height=350 width=500 src="https://github.com/mvghasty/Golom/blob/master/res/golom.png"/></a>
+<a target="_blank"><img height=300 width=500 src="https://github.com/mvghasty/Golom/blob/master/res/golom.png"/></a>
 
 <br>
 
